@@ -20,6 +20,9 @@ bar [] = []
 empty :: MultiArray a
 empty = Coll []
 
+-- Insert a element or collection in the beginning of collection
+insert :: MultiArray a -> MultiArray a -> MultiArray a
+insert x (Coll list) = Coll (x : list)
 
 
 main = do
