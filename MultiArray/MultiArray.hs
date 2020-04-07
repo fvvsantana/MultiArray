@@ -1,6 +1,6 @@
 
 -- Data type definition
-data MultiArray a = Elem a | Coll [MultiArray a]
+data MultiArray a = Elem a | Coll [MultiArray a] deriving(Show)
 
 {-  The value constructor for list is "[]". The type constructor is "List".
 Therefore, this line wouldn't work:
