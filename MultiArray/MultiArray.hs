@@ -1,16 +1,24 @@
+-- import Data.List
 
 -- Data type definition
 data MultiArray a = Elem a | Coll [MultiArray a] deriving(Show)
+-- Coll [Elem 0, Elem 1]
+-- Coll [ Coll [Elem 0, Elem 1], Coll [Elem 0, Elem 1]]
+-- Elem 0 : Coll [Elem 1, Elem 2] = Coll [Elem 0, Elem 1, Elem 2]
 
-{-  The value constructor for list is "[]". The type constructor is "List".
+{-  The type constructor and value constructor for list is "[]".
 Therefore, this line wouldn't work:
 data MultiArray a = Elem a | Coll List (MultiArray a)
-However, this would work:
+Neither this would work:
 bar :: List a -> List a
 bar [] = []
 -}
 
+-- Constructors
 
+-- Return an empty multi array
+empty :: MultiArray a
+empty = Coll []
 
 
 
