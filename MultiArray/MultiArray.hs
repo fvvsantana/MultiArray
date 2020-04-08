@@ -30,6 +30,10 @@ instance (Num a) => Num (MultiArray a) where
     abs (Coll []) = Coll []
     abs (Coll (a:as)) = insert (abs a) (abs (Coll as))
 
+    -- Signum
+    signum (Elem a) = Elem (signum a)
+    signum (Coll []) = Coll []
+    signum (Coll (a:as)) = insert (signum a) (signum (Coll as))
 
 
 
@@ -127,6 +131,9 @@ negIdFunction pos = - (idFunction pos)
 testAbs :: (Num a) => MultiArray a
 testAbs = abs (fromFunction [3,3] negIdFunction)
 
+testSignum :: (Num a) => MultiArray a
+testSignum = signum (fromFunction [3,3] negIdFunction)
+
 main = do
     -- print $ zeros [2,2,2]
     -- print $ idFunction [0,5,0]
@@ -136,7 +143,9 @@ main = do
     --print $ testAddition
     --print $ testSubtraction
     --print $ testMultiplication
-    print testAbs
+    --print testAbs
+    --print testSignum
+    --print . signum $ (fromFunction [3,3] (\x -> -5))
 
 
     return 0
