@@ -1,4 +1,10 @@
-
+{-  The type constructor and value constructor for list is "[]".
+Therefore, this line wouldn't work:
+data MultiArray a = Elem a | Coll List (MultiArray a)
+Neither this would work:
+bar :: List a -> List a
+bar [] = []
+-}
 
 -- Data type definition
 data MultiArray a = Elem a | Coll [MultiArray a]
@@ -8,7 +14,7 @@ instance (Show a) => Show (MultiArray a) where
     show (Elem n) = show n
     show (Coll list) = show list
 
---
+-- Operator overloading
 instance (Num a) => Num (MultiArray a) where
     -- Addition
     (+) (Elem a) (Elem b) = Elem $ a+b
@@ -39,27 +45,6 @@ instance (Num a) => Num (MultiArray a) where
     fromInteger i = Elem (fromInteger i)
 
 
-
--- Coll [Elem 0, Elem 1]
--- Coll [ Coll [Elem 0, Elem 1], Coll [Elem 0, Elem 1]]
--- Elem 0 : Coll [Elem 1, Elem 2] = Coll [Elem 0, Elem 1, Elem 2]
--- Coll [Elem 0, Elem 1] + Coll [Elem 2, Elem 3] =
--- (Elem 0 + Elem 2) : (Coll [Elem 1] + Coll [Elem 3])
---                     (Elem 1 + Elem 3) : (Coll [] + Coll [])
---                                       : Coll []
--- Elem (0+2)
-
--- Coll [Elem (0+2), Elem (1+3)] =
--- Coll [Elem 2, Elem 4]
-
-{-  The type constructor and value constructor for list is "[]".
-Therefore, this line wouldn't work:
-data MultiArray a = Elem a | Coll List (MultiArray a)
-Neither this would work:
-bar :: List a -> List a
-bar [] = []
--}
-
 -- Constructors
 
 -- Return an empty collection multi array
@@ -72,12 +57,6 @@ insert x (Coll list) = Coll $ x : list
 
 -- Return a multi array with the dimensions specified in the list filled with 0
 -- in every position.
-{-
-zeros :: (Eq a, Num a, Num b) => [a] -> MultiArray b
-zeros [] = Elem 0
-zeros (0:_) = empty
-zeros (x:xs) = insert (zeros xs) (zeros $ (x-1):xs)
--}
 zeros :: (Eq dim, Num dim, Num elem) => [dim] -> MultiArray elem
 zeros dimensions = fromFunction dimensions (\pos -> 0)
 
@@ -106,6 +85,28 @@ idFunction pos = fromIntegral . fromEnum . allTheSame $ pos
         allTheSame :: (Num a, Eq a) => [a] -> Bool
         allTheSame (p:ps) = and $ map (== p) ps
 
+main = do
+    let dimensions = [3,3]
+    let a = fromFunction dimensions idFunction
+    --let b = fromFunction dimensions (\pos -> 2 * (idFunction pos))
+    let b = fromFunction dimensions ((*2) . idFunction)
+    putStrLn $ (show a) ++ " + " ++ (show b) ++ " = " ++ (show (a+b))
+
+    --print $ zeros [2,2,2]
+    --print $ idFunction [0,5,0]
+    --print (Elem 0)
+    --print (Elem 0)
+    --print (fromFunction [2,2] negIdFunction)
+    --print $ testAddition
+    --print $ testSubtraction
+    --print $ testMultiplication
+    --print testAbs
+    --print testSignum
+    --print . signum $ (fromFunction [3,3] (\x -> -5))
+    --print . fromInteger $ 5
+    return 0
+
+-- Test functions
 
 testAddition :: (Num a) => MultiArray a
 testAddition = arrA + arrB
@@ -135,20 +136,3 @@ testAbs = abs (fromFunction [3,3] negIdFunction)
 
 testSignum :: (Num a) => MultiArray a
 testSignum = signum (fromFunction [3,3] negIdFunction)
-
-main = do
-    -- print $ zeros [2,2,2]
-    -- print $ idFunction [0,5,0]
-    -- print (Elem 0)
-    --print (Elem 0)
-    --print (fromFunction [2,2] negIdFunction)
-    --print $ testAddition
-    --print $ testSubtraction
-    --print $ testMultiplication
-    --print testAbs
-    --print testSignum
-    --print . signum $ (fromFunction [3,3] (\x -> -5))
-    print . fromInteger $ 5
-
-
-    return 0
