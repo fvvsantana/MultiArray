@@ -1,23 +1,32 @@
--- import Data.List
+
 
 -- Data type definition
---data MultiArray a = Elem a | Coll [MultiArray a] deriving(Show)
 data MultiArray a = Elem a | Coll [MultiArray a]
 
-
+-- Make the MultiArray showable
 instance (Show a) => Show (MultiArray a) where
     show (Elem n) = show n
     show (Coll list) = show list
 
-{-
-instance (Read a) => Read (MultiArray a) where
-    read n = show n
-    read (Coll list) = show list
--}
+--
+instance (Num a) => Num (MultiArray a) where
+    Elem a + Elem b = Elem $ a+b
+    Coll [] + Coll [] = Coll []
+    Coll (a:as) + Coll (b:bs) = insert (a+b) (Coll as + Coll bs)
+
+
 
 -- Coll [Elem 0, Elem 1]
 -- Coll [ Coll [Elem 0, Elem 1], Coll [Elem 0, Elem 1]]
 -- Elem 0 : Coll [Elem 1, Elem 2] = Coll [Elem 0, Elem 1, Elem 2]
+-- Coll [Elem 0, Elem 1] + Coll [Elem 2, Elem 3] =
+-- (Elem 0 + Elem 2) : (Coll [Elem 1] + Coll [Elem 3])
+--                     (Elem 1 + Elem 3) : (Coll [] + Coll [])
+--                                       : Coll []
+-- Elem (0+2)
+
+-- Coll [Elem (0+2), Elem (1+3)] =
+-- Coll [Elem 2, Elem 4]
 
 {-  The type constructor and value constructor for list is "[]".
 Therefore, this line wouldn't work:
@@ -74,12 +83,17 @@ idFunction pos = fromIntegral . fromEnum . allTheSame $ pos
         allTheSame (p:ps) = and $ map (== p) ps
 
 
+testSum :: (Num a) => MultiArray a
+testSum = arrA + arrB
+    where
+        arrA = fromFunction [3,3] idFunction
+        arrB = fromFunction [3,3] idFunction
 
 main = do
     -- print $ zeros [2,2,2]
     -- print $ idFunction [0,5,0]
     -- print (Elem 0)
     --print (Elem 0)
-    print $ fromFunction [2,2] idFunction
-    -- print $ read "[[1,0],[0,1]]" :: (MultiArray Int)
+    print $ testSum
+
     return 0
