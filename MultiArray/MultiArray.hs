@@ -35,6 +35,8 @@ instance (Num a) => Num (MultiArray a) where
     signum (Coll []) = Coll []
     signum (Coll (a:as)) = insert (signum a) (signum (Coll as))
 
+    -- fromInteger
+    fromInteger i = Elem (fromInteger i)
 
 
 
@@ -146,6 +148,7 @@ main = do
     --print testAbs
     --print testSignum
     --print . signum $ (fromFunction [3,3] (\x -> -5))
+    print . fromInteger $ 5
 
 
     return 0
