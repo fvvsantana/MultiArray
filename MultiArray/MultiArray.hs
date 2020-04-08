@@ -25,6 +25,12 @@ instance (Num a) => Num (MultiArray a) where
     (*) (Coll []) (Coll []) = Coll []
     (*) (Coll (a:as)) (Coll (b:bs)) = insert (a*b) (Coll as * Coll bs)
 
+    -- Abs
+    abs (Elem a) = Elem (abs a)
+    abs (Coll []) = Coll []
+    abs (Coll (a:as)) = insert (abs a) (abs (Coll as))
+
+
 
 
 
@@ -113,13 +119,24 @@ testMultiplication = arrA * arrB
         arrA = fromFunction [3,3] idFunction
         arrB = fromFunction [3,3] idFunction
 
+
+-- Return 1 if all numbers in the list are equal. Else, return 0
+negIdFunction :: (Num a, Eq a, Num b) => [a] -> b
+negIdFunction pos = - (idFunction pos)
+
+testAbs :: (Num a) => MultiArray a
+testAbs = abs (fromFunction [3,3] negIdFunction)
+
 main = do
     -- print $ zeros [2,2,2]
     -- print $ idFunction [0,5,0]
     -- print (Elem 0)
     --print (Elem 0)
+    --print (fromFunction [2,2] negIdFunction)
     --print $ testAddition
     --print $ testSubtraction
-    print $ testMultiplication
+    --print $ testMultiplication
+    print testAbs
+
 
     return 0
