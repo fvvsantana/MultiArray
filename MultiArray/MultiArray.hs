@@ -26,17 +26,22 @@ insert x (Coll list) = Coll $ x : list
 
 -- Return a multi array with the dimensions specified in the list filled with 0
 -- in every position.
+{-
 zeros :: (Eq a, Num a, Num b) => [a] -> MultiArray b
 zeros [] = Elem 0
 zeros (0:_) = empty
 zeros (x:xs) = insert (zeros xs) (zeros $ (x-1):xs)
+-}
+zeros :: (Eq dim, Num dim, Num elem) => [dim] -> MultiArray elem
+zeros dimensions = fromFunction dimensions (\pos -> 0)
 
 -- First parameter is a list of dimensions of the multi array to be built.
 -- Second parameter is a list of indices that indicates the position of the
--- first element of the multi array to be built
+-- first element of the multi array to be built.
 -- The Third parameter is a functions that receives a list that represents the
 -- position of the element to be inserted and returns its value.
-build :: (Num a, Eq a, Num b) => [a] -> [b] -> ([b] -> c) -> MultiArray c
+-- Return a multi array with specified dimensions, filled with the function f
+build :: (Num dim, Eq dim, Num pos) => [dim] -> [pos] -> ([pos] -> elem) -> MultiArray elem
 build [] (p:ps) f = Elem (f ps)
 build (0:_) _ _ = Coll []
 build (d:ds) pos@(p:ps) f = insert (build ds (0:pos) f) $ build ((d-1):ds) ((p+1):ps) f
@@ -45,7 +50,7 @@ build (d:ds) pos@(p:ps) f = insert (build ds (0:pos) f) $ build ((d-1):ds) ((p+1
 -- the cells are decided by the function f that receives the position where the
 -- element will be inserted and returns the value that will be inserted in that
 -- position.
-fromFunction :: (Num a, Eq a, Num b) => [a] -> ([b] -> c) -> MultiArray c
+fromFunction :: (Num dim, Eq dim, Num pos) => [dim] -> ([pos] -> elem) -> MultiArray elem
 fromFunction dimensions f = build dimensions [0] f
 
 -- Return 1 if all numbers in the list are equal. Else, return 0
