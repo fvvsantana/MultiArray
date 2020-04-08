@@ -22,16 +22,17 @@ empty = Coll []
 
 -- Insert a element or collection in the beginning of collection
 insert :: MultiArray a -> MultiArray a -> MultiArray a
-insert x (Coll list) = Coll (x : list)
+insert x (Coll list) = Coll $ x : list
 
 -- Return a multi array with the dimensions specified in the list filled with 0
 -- in every position.
 zeros :: (Eq a, Num a, Num b) => [a] -> MultiArray b
 zeros [] = Elem 0
 zeros (0:_) = empty
-zeros (x:xs) = insert (zeros xs) (zeros ((x-1):xs))
+zeros (x:xs) = insert (zeros xs) (zeros $ (x-1):xs)
 
 
 
 main = do
+    print $ zeros [2,2]
     return 0
