@@ -10,9 +10,16 @@ instance (Show a) => Show (MultiArray a) where
 
 --
 instance (Num a) => Num (MultiArray a) where
-    Elem a + Elem b = Elem $ a+b
-    Coll [] + Coll [] = Coll []
-    Coll (a:as) + Coll (b:bs) = insert (a+b) (Coll as + Coll bs)
+    -- Addition
+    (+) (Elem a) (Elem b) = Elem $ a+b
+    (+) (Coll []) (Coll []) = Coll []
+    (+) (Coll (a:as)) (Coll (b:bs)) = insert (a+b) (Coll as + Coll bs)
+
+    -- Subtraction
+    (-) (Elem a) (Elem b) = Elem $ a-b
+    (-) (Coll []) (Coll []) = Coll []
+    (-) (Coll (a:as)) (Coll (b:bs)) = insert (a-b) (Coll as - Coll bs)
+
 
 
 
@@ -83,8 +90,14 @@ idFunction pos = fromIntegral . fromEnum . allTheSame $ pos
         allTheSame (p:ps) = and $ map (== p) ps
 
 
-testSum :: (Num a) => MultiArray a
-testSum = arrA + arrB
+testAddition :: (Num a) => MultiArray a
+testAddition = arrA + arrB
+    where
+        arrA = fromFunction [3,3] idFunction
+        arrB = fromFunction [3,3] idFunction
+
+testSubtraction :: (Num a) => MultiArray a
+testSubtraction = arrA - arrB
     where
         arrA = fromFunction [3,3] idFunction
         arrB = fromFunction [3,3] idFunction
@@ -94,6 +107,7 @@ main = do
     -- print $ idFunction [0,5,0]
     -- print (Elem 0)
     --print (Elem 0)
-    print $ testSum
+    --print $ testAddition
+    print $ testSubtraction
 
     return 0
