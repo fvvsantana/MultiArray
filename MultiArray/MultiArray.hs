@@ -1,7 +1,20 @@
 -- import Data.List
 
 -- Data type definition
-data MultiArray a = Elem a | Coll [MultiArray a] deriving(Show)
+--data MultiArray a = Elem a | Coll [MultiArray a] deriving(Show)
+data MultiArray a = Elem a | Coll [MultiArray a]
+
+
+instance (Show a) => Show (MultiArray a) where
+    show (Elem n) = show n
+    show (Coll list) = show list
+
+{-
+instance (Read a) => Read (MultiArray a) where
+    read n = show n
+    read (Coll list) = show list
+-}
+
 -- Coll [Elem 0, Elem 1]
 -- Coll [ Coll [Elem 0, Elem 1], Coll [Elem 0, Elem 1]]
 -- Elem 0 : Coll [Elem 1, Elem 2] = Coll [Elem 0, Elem 1, Elem 2]
@@ -61,8 +74,12 @@ idFunction pos = fromIntegral . fromEnum . allTheSame $ pos
         allTheSame (p:ps) = and $ map (== p) ps
 
 
+
 main = do
     -- print $ zeros [2,2,2]
     -- print $ idFunction [0,5,0]
-    print $ fromFunction [2,2,2] idFunction
+    -- print (Elem 0)
+    --print (Elem 0)
+    print $ fromFunction [2,2] idFunction
+    -- print $ read "[[1,0],[0,1]]" :: (MultiArray Int)
     return 0
