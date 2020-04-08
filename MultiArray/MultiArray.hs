@@ -20,6 +20,11 @@ instance (Num a) => Num (MultiArray a) where
     (-) (Coll []) (Coll []) = Coll []
     (-) (Coll (a:as)) (Coll (b:bs)) = insert (a-b) (Coll as - Coll bs)
 
+    -- Multiplication
+    (*) (Elem a) (Elem b) = Elem $ a*b
+    (*) (Coll []) (Coll []) = Coll []
+    (*) (Coll (a:as)) (Coll (b:bs)) = insert (a*b) (Coll as * Coll bs)
+
 
 
 
@@ -102,12 +107,19 @@ testSubtraction = arrA - arrB
         arrA = fromFunction [3,3] idFunction
         arrB = fromFunction [3,3] idFunction
 
+testMultiplication :: (Num a) => MultiArray a
+testMultiplication = arrA * arrB
+    where
+        arrA = fromFunction [3,3] idFunction
+        arrB = fromFunction [3,3] idFunction
+
 main = do
     -- print $ zeros [2,2,2]
     -- print $ idFunction [0,5,0]
     -- print (Elem 0)
     --print (Elem 0)
     --print $ testAddition
-    print $ testSubtraction
+    --print $ testSubtraction
+    print $ testMultiplication
 
     return 0
